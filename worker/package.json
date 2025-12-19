@@ -1,0 +1,18 @@
+{
+  "name": "worker",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start" : "start \"worker-4001\" node index.js 4001 && start \"worker-4002\" node index.js 4002 && start \"worker-4003\" node index.js 4003 && start \"worker-4004\" node index.js 4004"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^2.2.1",
+    "express": "^5.1.0",
+    "vm": "^0.1.0"
+  }
+}
