@@ -63,6 +63,17 @@ npm run dev
 # Open http://localhost:3000
 ```
 
+## Testing
+
+This project includes automated tests for the backend orchestrator.
+See **[TESTING.md](TESTING.md)** for full documentation on running tests and the CI pipeline.
+
+To run tests quickly:
+```bash
+cd server
+npm test
+```
+
 ## How It Works
 - Submit code from the UI for one of two demo problems:
   - Problem 1: Sum two numbers
@@ -98,23 +109,3 @@ Provide either discrete PG variables or `DATABASE_URL`.
 - `JWT_SECRET`
 - `CLIENT_URL` (defaults to `http://localhost:3000`)
 - `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` (optional)
-- `GOOGLE_REDIRECT_URI` (optional)
-
-## Notes on Security
-- Payload encryption uses symmetric keys in `shared/cryptoUtil.js`. These are demo keys and not suitable for production.
-- `AES-256-CBC` is provided for the demo; `DES-ECB` is included only for educational comparison and should not be used in production.
-- Store real secrets in environment variables and rotate keys regularly.
-
-## Development Scripts
-- Client (`client/package.json`): `dev`, `build`, `start`, `lint`
-- Server (`server/package.json`): `start`
-- Worker (`worker/package.json`): `start` (launches 4 workers on Windows); you may start additional workers manually with `node index.js <port>`
-
-## Troubleshooting
-- No workers detected: ensure ports `4001–4004` (and optionally `4005`) are running and not blocked by firewall.
-- DB connection errors: verify `.env` values and that PostgreSQL is reachable.
-- Google OAuth: set client ID/secret and redirect URI to the server URL.
-
-## License
-This demo is provided as-is for educational purposes.
-
