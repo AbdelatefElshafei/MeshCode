@@ -674,7 +674,11 @@ app.get('/auth/google/callback', async (req, res) => {
     }
 });
 
-app.listen(3001, () => console.log('Orchestrator running on 3001'));
+if (require.main === module) {
+    app.listen(3001, () => console.log('Orchestrator running on 3001'));
+}
+
+module.exports = app;
 app.get('/dashboard', async (req, res) => {
     const uid = getAuthUser(req);
     if (!uid) return res.status(401).json({ error: 'Unauthorized' });
