@@ -255,13 +255,15 @@ function isAdmin(req) {
     }
 }
 
-const WORKER_BASES = [
-    'http://localhost:4001',
-    'http://localhost:4002',
-    'http://localhost:4003',
-    'http://localhost:4004',
-    'http://localhost:4005',
-];
+const WORKER_BASES = process.env.WORKER_NODES 
+    ? process.env.WORKER_NODES.split(',').map(s => s.trim())
+    : [
+        'http://localhost:4001',
+        'http://localhost:4002',
+        'http://localhost:4003',
+        'http://localhost:4004',
+        'http://localhost:4005',
+    ];
 
 const PROCESS_PATH = '/process-chunk';
 

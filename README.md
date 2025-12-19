@@ -53,7 +53,32 @@ This platform demonstrates an enterprise-grade approach to distributed systems, 
 
 ---
 
-##  Quick Start
+## 🐳 Docker Deployment
+
+For a production-ready deployment or quick local setup without installing dependencies manually, use Docker.
+
+### 1. Prerequisites
+- Docker & Docker Compose installed.
+
+### 2. Run with Docker Compose
+This will spin up the entire stack: **PostgreSQL**, **Orchestrator**, **Client**, and **2 Worker Nodes**.
+
+```bash
+docker-compose up --build
+```
+
+- **Client**: http://localhost:3000
+- **Server API**: http://localhost:3001
+- **Database**: Port 5432 (mapped locally)
+
+### 3. Scaling Workers
+You can scale the number of worker nodes dynamically (note: this requires dynamic port handling or internal networking which is handled by the orchestrator's environment configuration in the compose file).
+
+For this demo, to add more workers, add them to `docker-compose.yml` (e.g., `worker3`, `worker4`) and update the `WORKER_NODES` environment variable in the `server` service.
+
+---
+
+## ⚡ Quick Start (Manual)
 
 ### 1. Prerequisites
 - Node.js (v18+ recommended)

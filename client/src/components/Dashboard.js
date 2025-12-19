@@ -5,6 +5,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { CheckCircle2, XCircle, FileText, Trophy, Flame, TrendingUp, Clock, Upload, Camera, X, LayoutDashboard, LogOut, Code } from 'lucide-react';
 
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+
 export default function Dashboard() {
   const [user, setUser] = useState(null);
   const [problems, setProblems] = useState([]);
@@ -74,7 +76,7 @@ export default function Dashboard() {
           setPreviewUrl(reader.result);
           setUploading(true);
           const token = typeof window !== 'undefined' ? localStorage.getItem('authToken') : null;
-          const res = await fetch('http://localhost:3001/users/me/photo', {
+          const res = await fetch(`${API_BASE}/users/me/photo`, {
             method: 'POST',
             headers: { 
               'Content-Type': 'application/json',

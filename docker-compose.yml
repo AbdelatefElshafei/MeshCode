@@ -1,0 +1,68 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: distribute-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: distribute_ps
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  server:
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+    container_name: distribute-server
+    depends_on:
+      - db
+      - worker1
+      - worker2
+    environment:
+      PGHOST: db
+      PGPORT: 5432
+      PGUSER: postgres
+      PGPASSWORD: password
+      PGDATABASE: distribute_ps
+      JWT_SECRET: docker-secret-key
+      WORKER_NODES: http://worker1:4001,http://worker2:4001
+      CLIENT_URL: http://localhost:3000
+    ports:
+      - "3001:3001"
+
+  worker1:
+    build:
+      context: .
+      dockerfile: worker/Dockerfile
+    container_name: distribute-worker-1
+    command: ["node", "index.js", "4001"]
+    ports:
+      - "4001:4001"
+
+  worker2:
+    build:
+      context: .
+      dockerfile: worker/Dockerfile
+    container_name: distribute-worker-2
+    command: ["node", "index.js", "4001"]
+    ports:
+      - "4002:4001"
+
+  client:
+    build:
+      context: .
+      dockerfile: client/Dockerfile
+    container_name: distribute-client
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:3001
+    ports:
+      - "3000:3000"
+    depends_on:
+      - server
+
+volumes:
+  pgdata:

@@ -5,6 +5,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { LayoutDashboard, Shield, LogOut, Plus, Trash2, Save, FileText, Server, RefreshCw } from 'lucide-react';
 
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+
 export default function AdminDashboard() {
   const [user, setUser] = useState(null);
   const [problems, setProblems] = useState([]);
@@ -24,14 +26,14 @@ export default function AdminDashboard() {
     if (!token) { if (typeof window !== 'undefined') window.location.href = '/login'; return; }
     const load = async () => {
       try {
-        const dres = await fetch('http://localhost:3001/dashboard', { headers: { Authorization: `Bearer ${token}` } });
+        const dres = await fetch(`${API_BASE}/dashboard`, { headers: { Authorization: `Bearer ${token}` } });
         if (!dres.ok) { setError('Unauthorized'); setLoading(false); return; }
         const d = await dres.json();
         setUser(d.user || null);
-        const pres = await fetch('http://localhost:3001/problems');
+        const pres = await fetch(`${API_BASE}/problems`);
         const plist = await pres.json();
         setProblems(Array.isArray(plist.problems) ? plist.problems : []);
-        const sres = await fetch('http://localhost:3001/admin/stats', { headers: { Authorization: `Bearer ${token}` } });
+        const sres = await fetch(`${API_BASE}/admin/stats`, { headers: { Authorization: `Bearer ${token}` } });
         if (sres.ok) { setStats(await sres.json()); }
         setLoading(false);
       } catch {
@@ -60,7 +62,7 @@ export default function AdminDashboard() {
     setActionMsg('');
     try {
       const token = typeof window !== 'undefined' ? localStorage.getItem('authToken') : null;
-      const res = await fetch('http://localhost:3001/problems', {
+      const res = await fetch(`${API_BASE}/problems`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify(creating)

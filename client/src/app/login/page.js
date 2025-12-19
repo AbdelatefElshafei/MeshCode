@@ -33,7 +33,8 @@ export default function LoginPage() {
   const handleSubmit = async () => {
     setLoading(true);
     setError("");
-    const url = mode === "login" ? "http://localhost:3001/auth/login" : "http://localhost:3001/auth/register";
+    const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+    const url = mode === "login" ? `${apiBase}/auth/login` : `${apiBase}/auth/register`;
     try {
       const res = await fetch(url, {
         method: "POST",
