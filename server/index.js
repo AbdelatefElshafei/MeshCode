@@ -4,6 +4,7 @@ const axios = require('axios');
 const cors = require('cors');
 const net = require('net');
 const { encryptAES } = require('../shared/cryptoUtil');
+const logger = require('./logger');
 
 const app = express();
 app.use(cors());
@@ -51,7 +52,7 @@ async function ensureUsersTable() {
 }
 
 ensureUsersTable().catch(err => {
-    console.error('Failed to ensure users table', { error: err.message });
+    logger.error('Failed to ensure users table', { error: err.message });
 });
 
 async function ensureProblemTables() {
@@ -464,6 +465,7 @@ app.post('/submit', async (req, res) => {
             client.release();
         }
     } catch (err) {
+        logger.error('Submit failed', { error: err.message });
         res.status(500).json({ error: 'Submit failed' });
     }
 });
@@ -676,8 +678,45 @@ app.get('/auth/google/callback', async (req, res) => {
     }
 });
 
+app.get('/health', async (req, res) => {
+    const health = {
+        status: 'up',
+        timestamp: new Date(),
+        services: {
+            database: 'unknown',
+            workers: {
+                total: WORKER_BASES.length,
+                active: 0,
+                details: []
+            }
+        }
+    };
+
+    // Check Database
+    try {
+        await pool.query('SELECT 1');
+        health.services.database = 'up';
+    } catch (e) {
+        health.services.database = 'down';
+        health.status = 'degraded';
+    }
+
+    // Check Workers
+    try {
+        const active = await getActiveWorkers();
+        health.services.workers.active = active.length;
+        health.services.workers.details = active;
+        if (active.length === 0) health.status = 'degraded';
+    } catch (e) {
+        health.services.workers.status = 'error';
+    }
+
+    const statusCode = health.status === 'up' ? 200 : 503;
+    res.status(statusCode).json(health);
+});
+
 if (require.main === module) {
-    app.listen(3001, () => console.log('Orchestrator running on 3001'));
+    app.listen(3001, () => logger.info('Orchestrator running on 3001'));
 }
 
 module.exports = app;

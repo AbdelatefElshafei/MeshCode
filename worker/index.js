@@ -1,6 +1,7 @@
 const net = require('net');
 const vm = require('vm');
 const { decryptAES } = require('../shared/cryptoUtil');
+const logger = require('./logger');
 
 const PORT = Number(process.argv[2]);
 
@@ -44,6 +45,7 @@ const server = net.createServer((socket) => {
                 const resp = JSON.stringify({ error: 'Worker failed', message: err.message }) + '\n';
                 socket.write(resp);
                 socket.end();
+                logger.error('Worker failed processing', { error: err.message });
             }
         }
     });

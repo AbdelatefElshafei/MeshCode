@@ -19,7 +19,8 @@
     "jsonwebtoken": "^9.0.2",
     "net": "^1.0.2",
     "new": "^0.1.1",
-    "pg": "^8.16.3"
+    "pg": "^8.16.3",
+    "winston": "^3.19.0"
   },
   "devDependencies": {
     "cross-env": "^10.1.0",
